@@ -25,15 +25,15 @@ def toInt(array):
             res[i, j] = int(float(array[i, j]))
     return res
 
-def normalizing(dataSet):
-    minVals = dataSet.min(0)
-    maxVals = dataSet.max(0)
-    ranges = maxVals - minVals
-    normDataSet = zeros(shape(dataSet))
-    m = dataSet.shape[0]
-    normDataSet = dataSet - tile(minVals, (m, 1))
-    normDataSet = normDataSet/tile(ranges, (m, 1))
-    return normDataSet
+# def normalizing(dataSet):
+#     minVals = dataSet.min(0)
+#     maxVals = dataSet.max(0)
+#     ranges = maxVals - minVals
+#     normDataSet = zeros(shape(dataSet))
+#     m = dataSet.shape[0]
+#     normDataSet = dataSet - tile(minVals, (m, 1))
+#     normDataSet = normDataSet/tile(ranges, (m, 1))
+#     return normDataSet
 
 def loadTestData():
     l = []
@@ -42,7 +42,7 @@ def loadTestData():
         for line in lines:
             l.append(line)
     l = np.array(l)
-    return toInt(l), normalizing(toInt(l))
+    return toInt(l)
 
 def classify(inX, dataSet, labels, k):
     inX = np.mat(inX)
@@ -69,33 +69,22 @@ def saveResult(result):
         for str_line in result:
             tmp = []
             tmp.append(str_line)
-            # print("tmp: ", tmp)
-            # print("str_line: ", str_line)
             myWriter.writerow(str_line)
 
 def DrillTest():
     print("loadTrainData()")
     trainData, trainLabel = loadTrainData()
-    trainData = normalizing(trainData)
     print("loadTestData()")
-    testData, norTestData = loadTestData()
+    testData = loadTestData()
     m,n = np.shape(testData)
     errorCount=0
     resultList=[]
     print("classify()")
     for i in range(m):
-        classifierResult = classify(norTestData[i], trainData, trainLabel, 1)
+        classifierResult = classify(testData[i], trainData, trainLabel, 1)
         resultList.append([str(testData[i][0]), str(testData[i][1]), str(classifierResult)])
         print ("the classifier came back with: %s, rate of progress: %.2f%%" % (classifierResult, i/m * 100))
     saveResult(resultList)
-
-if __name__ == '__main__':
-    # rdData.read_excel()
-    # rdData.showData()
-    # rdData.createData()
-    DrillTest()
-    check()
-    rdData.showResult()
 
 def loadResultData():
     l = []
@@ -106,7 +95,7 @@ def loadResultData():
     l = np.array(l)
     label = l[:, -1]
     data = l[:, :-1]
-    return normalizing(toInt(data)), label
+    return toInt(data), label
 
 def check():
     print("loadTrainData()")
@@ -117,18 +106,27 @@ def check():
     errorCount = 0
     print("checking...")
     for i in range(m):
+        print("rate of progress: %.2f%%" % (i/m * 100))
         labelindex = -1
-        x = (trainData[i, 0]//10)*10
-        y = (trainData[i, 1]//10)*10
-        for index in range(16000):
+        x = (trainData[i, 0] + 20)//40*40
+        y = (trainData[i, 1] + 20)//40*40
+        for index in range(1000000):
             if resultData[index, 0] == x and resultData[index, 1] == y:
                 labelindex = index
-                # print(resultData[index, 0], x, resultData[index, 1], y)
                 break
         if trainLabel[i] != resultLabel[labelindex]:
             errorCount += 1.0
     print ("\nthe total number of errors is: %d" % errorCount)
-    print ("\nthe total error rate is: %f" % (errorCount/float(m)))
+    print ("\nthe total accuracy is: %f" % (1 - errorCount/float(m)))
 
-# the total number of errors is: 206
-# the total error rate is: 0.397683
+if __name__ == '__main__':
+    # rdData.read_excel()
+    # rdData.showData()
+    rdData.createData()
+    DrillTest()
+    check()
+    rdData.showResultData()
+
+# 1000000 * 40*40
+# the total number of errors is: 1
+# the total accuracy is: 0.998069

@@ -88,9 +88,9 @@ def showResult():
 #生成测试坐标数据
 def createData():
     data = []
-    for i in range(400):
-        for j in range(400):
-            data.append([412000 + 0.5 + j*10, 2541000 + 0.5 + i*10])
+    for i in range(1000):
+        for j in range(1000):
+            data.append([412000 + j*40, 2541000 + i*40])
     with open('test.csv', 'w', newline="") as myFile:
         myWriter = csv.writer(myFile)
         for str_line in data:
@@ -99,6 +99,50 @@ def createData():
             # print("tmp: ", tmp)
             # print("str_line: ", str_line)
             myWriter.writerow(str_line)
+
+def showResultData():
+    l = []
+    with open('result.csv') as file:
+        lines = csv.reader(file)
+        for line in lines:
+            l.append(line)
+    A, B, C = [], [], []
+    for index in l[:]:
+        if index[2] == 'B':
+            B.append([int(float(index[0])), int(float(index[1]))])
+        if index[2] == 'C':
+            C.append([int(float(index[0])), int(float(index[1]))])
+        if index[2] == 'A':
+            A.append([int(float(index[0])), int(float(index[1]))])
+    plt.scatter([nums[0] for nums in A], [nums[1] for nums in A], c = 'darkolivegreen', s = 1, marker=',')
+    plt.scatter([nums[0] for nums in B], [nums[1] for nums in B], c = 'indianred', s = 1, marker=',')
+    plt.scatter([nums[0] for nums in C], [nums[1] for nums in C], c = 'royalblue', s = 1, marker=',')
+    
+    l = []
+    with open('drill.csv') as file:
+        lines = csv.reader(file)
+        for line in lines:
+            l.append(line)
+    A, B, C = [], [], []
+    for index in l[1:]:
+        if index[2] == 'B':
+            B.append([int(float(index[0])), int(float(index[1]))])
+        if index[2] == 'C':
+            C.append([int(float(index[0])), int(float(index[1]))])
+        if index[2] == 'A':
+            A.append([int(float(index[0])), int(float(index[1]))])
+
+    plt.scatter([nums[0] for nums in A], [nums[1] for nums in A], c = 'k', s = 2, marker='o')
+    plt.scatter([nums[0] for nums in B], [nums[1] for nums in B], c = 'k', s = 2, marker='o')
+    plt.scatter([nums[0] for nums in C], [nums[1] for nums in C], c = 'k', s = 2, marker='o')
+
+    l1 = plt.scatter([nums[0] for nums in A], [nums[1] for nums in A], c = 'g', s = 1, marker='o')
+    l2 = plt.scatter([nums[0] for nums in B], [nums[1] for nums in B], c = 'r', s = 1, marker='o')
+    l3 = plt.scatter([nums[0] for nums in C], [nums[1] for nums in C], c = 'b', s = 1, marker='o')
+ 
+    plt.legend(handles =[l1,l2,l3] , labels=['A','B','C'], loc = 'best')
+
+    plt.show()
 
 #x = (412884,450819) 37935 => 412000~452000 40000
 #y = (2546524, 2575622) 29098 => 2541000~2581000 40000
