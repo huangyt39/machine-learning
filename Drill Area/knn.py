@@ -22,7 +22,7 @@ def toInt(array):
     res = np.zeros((m, n))
     for i in range(m):
         for j in range(n):
-            res[i, j] = int(float(array[i, j]))
+            res[i, j] = float(array[i, j])
     return res
 
 # def normalizing(dataSet):
@@ -106,7 +106,7 @@ def check():
     errorCount = 0
     print("checking...")
     for i in range(m):
-        print("rate of progress: %.2f%%" % (i/m * 100))
+        print("checking...rate of progress: %.2f%%" % (i/m * 100))
         labelindex = -1
         x = (trainData[i, 0] + 20)//40*40
         y = (trainData[i, 1] + 20)//40*40
@@ -122,7 +122,7 @@ def check():
 if __name__ == '__main__':
     # rdData.read_excel()
     # rdData.showData()
-    rdData.createData()
+    # rdData.createData()
     DrillTest()
     check()
     rdData.showResultData()
